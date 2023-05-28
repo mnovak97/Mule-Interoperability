@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="92688bac-57ea-4f18-b325-17087020bc9d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="fe65c5f2-21df-4496-8189-d2d9c93e67fa" >
+		<http:request-connection host="localhost" port="5152" />
+	</http:request-config>
+	<flow name="interoperabilityprojectFlow" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
+		<http:listener doc:name="Listener" doc:id="fbbed24e-250c-4cf7-a60d-6167ad40bc5e" config-ref="HTTP_Listener_config" path="/api/Players"/>
+		<http:request method="GET" doc:name="Request" doc:id="9887130b-1d4e-40da-9c24-b5b0d71cd733" config-ref="HTTP_Request_configuration" path="/api/Players"/>
+		<file:write doc:name="Write" doc:id="604c2e90-3f24-4522-b86d-f9cb26310366" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/get-players.txt" mode="APPEND"/>
+	</flow>
+</mule>

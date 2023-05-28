@@ -1,0 +1,1 @@
+[{"id":1,"firstName":"Andriy","lastName":"Shevchenko","teamId":1},{"id":7,"firstName":"Lionel","lastName":"Messi","teamId":2},{"id":8,"firstName":"Marc","lastName":"Ter Stegen","teamId":2},{"id":13,"firstName":"Filip","lastName":"Mucnjak","teamId":3},{"id":3,"firstName":"Paolo","lastName":"Maldini","teamId":1}]
