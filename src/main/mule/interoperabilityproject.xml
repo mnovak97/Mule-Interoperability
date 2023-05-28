@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="92688bac-57ea-4f18-b325-17087020bc9d" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="fe65c5f2-21df-4496-8189-d2d9c93e67fa" >
 		<http:request-connection host="localhost" port="5152" />
 	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="a9ccd1c3-4f5f-42bd-8e54-e67cd09e209b" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="5bcfea53-59a8-4be0-82c3-62e4681b8510" >
+		<http:request-connection host="localhost" port="5152" />
+	</http:request-config>
 	<flow name="interoperabilityprojectFlow" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
 		<http:listener doc:name="Listener" doc:id="fbbed24e-250c-4cf7-a60d-6167ad40bc5e" config-ref="HTTP_Listener_config" path="/api/Players"/>
 		<http:request method="GET" doc:name="Request" doc:id="9887130b-1d4e-40da-9c24-b5b0d71cd733" config-ref="HTTP_Request_configuration" path="/api/Players"/>
 		<file:write doc:name="Write" doc:id="604c2e90-3f24-4522-b86d-f9cb26310366" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/get-players.txt" mode="APPEND"/>
+	</flow>
+	<flow name="interoperabilityprojectFlow1" doc:id="5fcd438c-6d58-4721-abee-c7b4bbd092d6" >
+		<http:listener doc:name="Listener" doc:id="ad0fe631-3e82-43c1-a967-658c6144cfb6" config-ref="HTTP_Listener_config1" path="/api/Players"/>
+		<ee:transform doc:name="Transform Message" doc:id="2805056a-0618-4dc1-a4e3-87acc900558f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: payload.firstName,
+	lastName: payload.lastName,
+	teamId: payload.teamId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="3b73a7ec-9478-4e99-80e4-242ea49ed93d" config-ref="HTTP_Request_configuration1" path="/api/Players">
+		</http:request>
+		<file:write doc:name="Write" doc:id="2add4afb-2547-4442-ac75-83e8e3f522d3" mode="APPEND" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/post-players.txt"/>
 	</flow>
 </mule>

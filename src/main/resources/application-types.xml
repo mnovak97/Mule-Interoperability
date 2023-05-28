@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="player" format="json">
+      <types:shape format="weave" example="examples/player.json"><![CDATA[%dw 2.0
+
+type player = {|
+  firstName: String, 
+  lastName: String, 
+  teamId: Number {"typeId": "int"}
+|} {"example": "{\\\"firstName\\\":\\\"Andriyyyy\\\",\\\"lastName\\\":\\\"Shevchenko\\\",\\\"teamId\\\":1}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="playerOutput" format="json">
+      <types:shape format="weave" example="examples/playersOut.json"><![CDATA[%dw 2.0
+
+type playerOutput = {|
+  id: Number {"typeId": "int"}, 
+  firstName: String, 
+  lastName: String, 
+  teamId: Number {"typeId": "int"}, 
+  team: String
+|} {"example": "{\\\"id\\\":21,\\\"firstName\\\":\\\"Andriyyyy\\\",\\\"lastName\\\":\\\"Shevchenko\\\",\\\"teamId\\\":1,\\\"team\\\":\\\"nesto\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#2805056a-0618-4dc1-a4e3-87acc900558f">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="player"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="playerOutput"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
