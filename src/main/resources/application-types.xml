@@ -38,27 +38,4 @@ type playerUpdate = {|
 ]]></types:shape>
     </types:type>
   </types:catalog>
-  <types:enrichment select="#2805056a-0618-4dc1-a4e3-87acc900558f">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="player"/>
-        </types:message>
-      </types:input-event>
-      <types:output-event>
-        <types:message>
-          <types:payload type="playerOutput"/>
-        </types:message>
-      </types:output-event>
-    </types:processor-declaration>
-  </types:enrichment>
-  <types:enrichment select="#b80ca280-0a1f-4135-a824-d3e3c7f6af26">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="playerUpdate"/>
-        </types:message>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
 </types:mule>

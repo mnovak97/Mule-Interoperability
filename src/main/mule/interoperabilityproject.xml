@@ -24,43 +24,43 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="3d247d94-bcd6-4aa9-b9cf-59a9e9fc9989" >
 		<http:request-connection host="localhost" port="5152" />
 	</http:request-config>
-	<flow name="interoperabilityprojectFlow" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
+	<http:listener-config name="HTTP_Listener_config3" doc:name="HTTP Listener config" doc:id="9bbfa500-4e35-48e8-91b7-2b6412129ccf" >
+		<http:listener-connection host="0.0.0.0" port="8084" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration3" doc:name="HTTP Request configuration" doc:id="7a854402-f858-48bf-b6a9-f22b5df9b68e" >
+		<http:request-connection host="localhost" port="5152" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration4" doc:name="HTTP Request configuration" doc:id="cfa2a4be-c6eb-4873-9a48-08462b2acc1e" >
+		<http:request-connection host="localhost" port="5152" />
+	</http:request-config>
+	<flow name="GET" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
 		<http:listener doc:name="Listener" doc:id="fbbed24e-250c-4cf7-a60d-6167ad40bc5e" config-ref="HTTP_Listener_config" path="/api/Players"/>
 		<http:request method="GET" doc:name="Request" doc:id="9887130b-1d4e-40da-9c24-b5b0d71cd733" config-ref="HTTP_Request_configuration" path="/api/Players"/>
-		<file:write doc:name="Write" doc:id="604c2e90-3f24-4522-b86d-f9cb26310366" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/get-players.txt" mode="APPEND"/>
+		<file:write doc:name="Write" doc:id="604c2e90-3f24-4522-b86d-f9cb26310366" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/CRUD/get-players.txt"/>
 	</flow>
-	<flow name="interoperabilityprojectFlow1" doc:id="5fcd438c-6d58-4721-abee-c7b4bbd092d6" >
+	<flow name="POST" doc:id="5fcd438c-6d58-4721-abee-c7b4bbd092d6" >
 		<http:listener doc:name="Listener" doc:id="ad0fe631-3e82-43c1-a967-658c6144cfb6" config-ref="HTTP_Listener_config1" path="/api/Players"/>
-		<ee:transform doc:name="Transform Message" doc:id="2805056a-0618-4dc1-a4e3-87acc900558f" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	firstName: payload.firstName,
-	lastName: payload.lastName,
-	teamId: payload.teamId
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="e6b707b4-8561-48be-9d77-16e759a47a69" />
 		<http:request method="POST" doc:name="Request" doc:id="3b73a7ec-9478-4e99-80e4-242ea49ed93d" config-ref="HTTP_Request_configuration1" path="/api/Players">
 		</http:request>
-		<file:write doc:name="Write" doc:id="2add4afb-2547-4442-ac75-83e8e3f522d3" mode="APPEND" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/post-players.txt"/>
+		<file:write doc:name="Write" doc:id="2add4afb-2547-4442-ac75-83e8e3f522d3" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/CRUD/post-players.txt"/>
 	</flow>
-	<flow name="interoperabilityprojectFlow2" doc:id="70df176b-0277-45b2-8f55-661e8199646d" >
-		<http:listener doc:name="Listener" doc:id="7299cc1a-8fdb-4158-aa09-979870c18ca3" config-ref="HTTP_Listener_config2" path="/api/Players"/>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="3ffa14c9-557c-4f54-99d2-5db20ac5b660" />
-		<ee:transform doc:name="Transform Message" doc:id="b80ca280-0a1f-4135-a824-d3e3c7f6af26" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<http:request method="GET" doc:name="Request" doc:id="15e1d3b4-abc0-404e-8bdb-8c99306fc81f" config-ref="HTTP_Request_configuration2" path="/api/players">
-			<http:body ><![CDATA[#[payload.Id]]]></http:body>
+	<flow name="UPDATE" doc:id="70df176b-0277-45b2-8f55-661e8199646d" >
+		<http:listener doc:name="Listener" doc:id="7299cc1a-8fdb-4158-aa09-979870c18ca3" config-ref="HTTP_Listener_config2" path="/api/Players/{id}"/>
+		<set-variable doc:name="Set Variable" doc:id="7d266b61-eabe-4a73-bfa2-9e59a09f9903" variableName="id" value="#[message.attributes.uriParams['id']]"/>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="3ffa14c9-557c-4f54-99d2-5db20ac5b660" />
+		<http:request method="PUT" doc:name="Request" doc:id="15e1d3b4-abc0-404e-8bdb-8c99306fc81f" config-ref="HTTP_Request_configuration2" url='#["http://localhost:5152/api/players/$(vars.id)"]'>
 		</http:request>
+		<file:write doc:name="Write" doc:id="c2789a46-e782-4a59-9196-fa0d8990dc26" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/CRUD/update-player.txt">
+			<file:content ><![CDATA[#["Player with id $(vars.id) was updated"]]]></file:content>
+		</file:write>
+	</flow>
+	<flow name="DELETE" doc:id="3ef37651-29ce-4eb4-9014-766e930f6413" >
+		<http:listener doc:name="Listener" doc:id="6a3b873e-dc98-4871-8040-94e51bb7a01a" config-ref="HTTP_Listener_config3" path="/api/Players/{id}"/>
+		<set-variable value="#[message.attributes.uriParams['id']]" doc:name="Set Variable" doc:id="ee2dce7d-c6b7-4ae5-99a1-c66ecafb3c45" variableName="id"/>
+		<http:request method="DELETE" doc:name="Request" doc:id="d2fd8bfa-7ce8-4be7-b9e8-b4a3aa12f64f" config-ref="HTTP_Request_configuration4" url='#["http://localhost:5152/api/players/$(vars.id)"]'/>
+		<file:write doc:name="Write" doc:id="f53e986b-69b5-4311-be0b-ce429ecf460e" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/CRUD/delete-player.txt">
+			<file:content ><![CDATA[#["Player with id $(vars.id) deleted"]]]></file:content>
+		</file:write>
 	</flow>
 </mule>
