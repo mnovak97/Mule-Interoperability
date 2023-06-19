@@ -18,6 +18,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="5bcfea53-59a8-4be0-82c3-62e4681b8510" >
 		<http:request-connection host="localhost" port="5152" />
 	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config2" doc:name="HTTP Listener config" doc:id="aff0bfcc-e1a0-404a-b979-66426816fba3" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="3d247d94-bcd6-4aa9-b9cf-59a9e9fc9989" >
+		<http:request-connection host="localhost" port="5152" />
+	</http:request-config>
 	<flow name="interoperabilityprojectFlow" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
 		<http:listener doc:name="Listener" doc:id="fbbed24e-250c-4cf7-a60d-6167ad40bc5e" config-ref="HTTP_Listener_config" path="/api/Players"/>
 		<http:request method="GET" doc:name="Request" doc:id="9887130b-1d4e-40da-9c24-b5b0d71cd733" config-ref="HTTP_Request_configuration" path="/api/Players"/>
@@ -40,5 +46,21 @@ output application/json
 		<http:request method="POST" doc:name="Request" doc:id="3b73a7ec-9478-4e99-80e4-242ea49ed93d" config-ref="HTTP_Request_configuration1" path="/api/Players">
 		</http:request>
 		<file:write doc:name="Write" doc:id="2add4afb-2547-4442-ac75-83e8e3f522d3" mode="APPEND" path="/Users/martinnovak/AnypointStudio/studio-workspace/interoperabilityproject/post-players.txt"/>
+	</flow>
+	<flow name="interoperabilityprojectFlow2" doc:id="70df176b-0277-45b2-8f55-661e8199646d" >
+		<http:listener doc:name="Listener" doc:id="7299cc1a-8fdb-4158-aa09-979870c18ca3" config-ref="HTTP_Listener_config2" path="/api/Players"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="3ffa14c9-557c-4f54-99d2-5db20ac5b660" />
+		<ee:transform doc:name="Transform Message" doc:id="b80ca280-0a1f-4135-a824-d3e3c7f6af26" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="GET" doc:name="Request" doc:id="15e1d3b4-abc0-404e-8bdb-8c99306fc81f" config-ref="HTTP_Request_configuration2" path="/api/players">
+			<http:body ><![CDATA[#[payload.Id]]]></http:body>
+		</http:request>
 	</flow>
 </mule>
