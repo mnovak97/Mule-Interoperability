@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="92688bac-57ea-4f18-b325-17087020bc9d" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
@@ -33,6 +34,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration4" doc:name="HTTP Request configuration" doc:id="cfa2a4be-c6eb-4873-9a48-08462b2acc1e" >
 		<http:request-connection host="localhost" port="5152" />
 	</http:request-config>
+	<amqp:config name="AMQP_Config" doc:name="AMQP Config" doc:id="392a6bd0-cfa0-4ef8-9db7-c0f4a0773884" >
+		<amqp:connection host="localhost" password="guest" username="guest"/>
+	</amqp:config>
+	<amqp:config name="AMQP_Config1" doc:name="AMQP Config" doc:id="c3965191-78d3-4b2e-a5c9-71f965489bc2" >
+		<amqp:connection host="localhost" port="15672" username="guest" password="guest" />
+	</amqp:config>
 	<flow name="GET" doc:id="df6ee0e7-7464-48ea-9e04-0d9086880784" >
 		<http:listener doc:name="Listener" doc:id="fbbed24e-250c-4cf7-a60d-6167ad40bc5e" config-ref="HTTP_Listener_config" path="/api/Players"/>
 		<http:request method="GET" doc:name="Request" doc:id="9887130b-1d4e-40da-9c24-b5b0d71cd733" config-ref="HTTP_Request_configuration" path="/api/Players"/>
@@ -62,5 +69,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<file:write doc:name="Write" doc:id="f53e986b-69b5-4311-be0b-ce429ecf460e" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/CRUD/delete-player.txt">
 			<file:content ><![CDATA[#["Player with id $(vars.id) deleted"]]]></file:content>
 		</file:write>
+	</flow>
+	<flow name="Rabbit-MQ" doc:id="e34052c0-b3f1-4c2e-8905-b692871bde6b" >
+		<amqp:listener doc:name="Listener" doc:id="87f69001-e2e1-4451-aa93-5312d3ad4eb7" config-ref="AMQP_Config" queueName="players"/>
+		<file:write doc:name="Write" doc:id="71e322b4-15e1-4518-8609-486e15ca3e7f" path="/Users/martinnovak/Desktop/faks/interoperabilityproject/Rabbit-MQ/messages.txt"/>
 	</flow>
 </mule>
